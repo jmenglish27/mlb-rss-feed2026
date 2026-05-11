@@ -5,10 +5,12 @@ from email.utils import formatdate
 URL = "https://statsapi.mlb.com/api/v1/standings?leagueId=103,104"
 
 def build_feed():
+
+    data = {}
     try:
         data = requests.get(URL, timeout=10).json()
     except Exception:
-        data = {}
+        pass
 
     lines = []
     lines.append("MLB Standings — AL West")
@@ -16,18 +18,20 @@ def build_feed():
 
     records = data.get("records", [])
 
-    # 🔥 ONLY AL WEST
+    alwest_found = False
+
     for record in records:
 
-        division_name = (
-            record.get("division", {}).get("name")
-            or ""
-        )
+        division_name = record.get("division", {}).get("name", "")
 
-        if division_name != "American League West":
+        # STRICT FILTER: only AL West
+        if "West" not in division_name:
+            continue
+        if "American League West" not in division_name:
             continue
 
-        # print division ONCE
+        alwest_found = True
+
         lines.append("AL West")
         lines.append("")
 
@@ -37,10 +41,8 @@ def build_feed():
             lines.append("No data available")
             break
 
-        # leader for GB calculation
         leader_wins = max(t.get("wins", 0) for t in teams)
 
-        # sort standings
         teams = sorted(
             teams,
             key=lambda x: x.get("wins", 0),
@@ -49,7 +51,7 @@ def build_feed():
 
         for i, team in enumerate(teams, 1):
 
-            name = team.get("team", {}).get("name") or "Unknown Team"
+            name = team.get("team", {}).get("name", "Unknown Team")
             wins = team.get("wins", 0)
             losses = team.get("losses", 0)
 
@@ -59,7 +61,10 @@ def build_feed():
             lines.append(f"{i}. {name} {wins}-{losses} {gb_text}")
 
         lines.append("")
-        break  # 🔥 stop after AL West only
+        break
+
+    if not alwest_found:
+        lines.append("AL West data not found")
 
     rss = f"""<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0">

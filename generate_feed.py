@@ -21,12 +21,7 @@ leader = max(t.get("wins", 0) for t in teams)
 
 teams = sorted(teams, key=lambda x: x.get("wins", 0), reverse=True)
 
-for i, team in enumerate(teams, 1):
-    name = (
-        team.get("team", {}).get("abbreviation")
-        or team.get("team", {}).get("name")
-        or "UNK"
-    )
+name = team.get("team", {}).get("name", "Unknown Team")
 
     wins = team.get("wins", 0)
     losses = team.get("losses", 0)

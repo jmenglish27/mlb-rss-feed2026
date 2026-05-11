@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+<channel>
+
+<title>MLB Standings Feed</title>
+<description>Auto-updating MLB standings</description>
+
+<item>
+<title>MLB Standings Update</title>
+
+<description><![CDATA[
+Division
+Rays: 26-13
+Yankees: 26-15
+Blue Jays: 18-22
+Orioles: 18-23
+Red Sox: 17-23
+
+Division
+Guardians: 21-21
+White Sox: 19-21
+Tigers: 19-22
+Royals: 19-22
+Twins: 18-23
+
+Division
+Athletics: 21-19
+Rangers: 19-21
+Mariners: 19-22
+Angels: 16-25
+Astros: 16-25
+
+Division
+Braves: 28-13
+Phillies: 19-22
+Marlins: 19-22
+Nationals: 19-22
+Mets: 15-25
+
+Division
+Cubs: 27-14
+Brewers: 22-16
+Cardinals: 23-17
+Pirates: 22-19
+Reds: 22-19
+
+Division
+Padres: 24-16
+Dodgers: 24-16
+D-backs: 19-20
+Giants: 16-24
+Rockies: 16-25
+
+]]></description>
+
+<pubDate>Mon, 11 May 2026 15:28:33 -0000</pubDate>
+<guid>2026-05-11T15:28:33.510665</guid>
+
+</item>
+
+</channel>
+</rss>

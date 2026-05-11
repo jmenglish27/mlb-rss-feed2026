@@ -14,7 +14,6 @@ lines = []
 for record in data.get("records", []):
     division = record.get("division", {}).get("name") or "Division"
     lines.append(division)
-
     teams = record.get("teamRecords", [])
 
 leader = max(t.get("wins", 0) for t in teams)
@@ -25,10 +24,8 @@ name = team.get("team", {}).get("name", "Unknown Team")
 
     wins = team.get("wins", 0)
     losses = team.get("losses", 0)
-
     gb = (leader - wins) / 2
     gb_text = "—" if gb == 0 else f"{gb:.1f} GB"
-
     lines.append(f"{i}. {name} {wins}-{losses} {gb_text}")
 
 rss = f"""<?xml version="1.0" encoding="UTF-8"?>

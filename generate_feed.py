@@ -12,43 +12,35 @@ def build_feed():
         data = {}
 
     lines = []
-    lines.append("MLB Standings — AL West")
+    lines.append("MLB Standings — All Divisions")
     lines.append("")
 
     records = data.get("records", [])
 
-    alwest_teams = []
-
-    # 🔥 STEP 1: find AL West properly from API structure
+    # Loop through every division in the API
     for record in records:
 
-        division = record.get("division", {}).get("name", "")
+        division_name = record.get("division", {}).get("name") or "Division"
 
-        # flexible match (API naming varies)
-        if "West" in division and "American League" in division:
+        lines.append(division_name)
+        lines.append("")
 
-            teams = record.get("teamRecords", [])
+        teams = record.get("teamRecords", [])
 
-            for t in teams:
-                alwest_teams.append(t)
+        if not teams:
+            lines.append("No data available")
+            lines.append("")
+            continue
 
-    # fallback safety
-    if not alwest_teams:
-        lines.append("AL West data not found")
-    else:
+        leader_wins = max(t.get("wins", 0) for t in teams)
 
-        leader_wins = max(t.get("wins", 0) for t in alwest_teams)
-
-        alwest_teams = sorted(
-            alwest_teams,
+        teams = sorted(
+            teams,
             key=lambda x: x.get("wins", 0),
             reverse=True
         )
 
-        lines.append("AL West")
-        lines.append("")
-
-        for i, team in enumerate(alwest_teams, 1):
+        for i, team in enumerate(teams, 1):
 
             name = team.get("team", {}).get("name", "Unknown Team")
             wins = team.get("wins", 0)
@@ -65,10 +57,10 @@ def build_feed():
 <rss version="2.0">
 <channel>
 <title>MLB Standings Feed</title>
-<description>Auto-updating AL West standings</description>
+<description>Auto-updating MLB standings (all divisions)</description>
 
 <item>
-<title>AL West Standings Update</title>
+<title>MLB Standings Update</title>
 <description><![CDATA[
 {chr(10).join(lines)}
 ]]></description>

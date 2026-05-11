@@ -17,25 +17,24 @@ for record in data.get("records", []):
 
     teams = record.get("teamRecords", [])
 
-    if not teams:
-        continue
+leader = max(t.get("wins", 0) for t in teams)
 
-    leader = max(t.get("wins", 0) for t in teams)
+teams = sorted(teams, key=lambda x: x.get("wins", 0), reverse=True)
 
-    teams = sorted(teams, key=lambda x: x.get("wins", 0), reverse=True)
+for i, team in enumerate(teams, 1):
+    name = (
+        team.get("team", {}).get("abbreviation")
+        or team.get("team", {}).get("name")
+        or "UNK"
+    )
 
-    for i, t in enumerate(teams, 1):
-        name = (team.get("team", {}).get("abbreviation")
-    or team.get("team", {}).get("name") or "UNK")
-        w = t.get("wins", 0)
-        l = t.get("losses", 0)
+    wins = team.get("wins", 0)
+    losses = team.get("losses", 0)
 
-        gb = (leader - w) / 2
-        gb = "—" if gb == 0 else f"{gb:.1f} GB"
+    gb = (leader - wins) / 2
+    gb_text = "—" if gb == 0 else f"{gb:.1f} GB"
 
-        lines.append(f"{i}. {name} {w}-{l} {gb}")
-
-    lines.append("")
+    lines.append(f"{i}. {name} {wins}-{losses} {gb_text}")
 
 rss = f"""<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0">

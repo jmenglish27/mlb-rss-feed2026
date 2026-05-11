@@ -12,33 +12,29 @@ except Exception:
 lines = []
 
 for record in data.get("records", []):
-    division = (
-        record.get("division", {}).get("name")
-        or record.get("division", {}).get("abbreviation")
-        or "Division"
-    )
-
+    division = record.get("division", {}).get("name") or "Division"
     lines.append(division)
 
     teams = record.get("teamRecords", [])
 
-if not teams:
-    continue
+    if not teams:
+        continue
 
-leader_wins = max(t.get("wins", 0) for t in teams)
+    leader = max(t.get("wins", 0) for t in teams)
 
-teams = sorted(teams, key=lambda x: x.get("wins", 0), reverse=True)
+    teams = sorted(teams, key=lambda x: x.get("wins", 0), reverse=True)
 
-for i, team in enumerate(teams, 1):
-    name = team.get("team", {}).get("abbreviation") or "UNK"
-    wins = team.get("wins", 0)
-    losses = team.get("losses", 0)
+    for i, t in enumerate(teams, 1):
+        name = t.get("team", {}).get("abbreviation") or "UNK"
+        w = t.get("wins", 0)
+        l = t.get("losses", 0)
 
-    gb = (leader_wins - wins) / 2
+        gb = (leader - w) / 2
+        gb = "—" if gb == 0 else f"{gb:.1f} GB"
 
-    gb_text = "—" if gb == 0 else f"{gb:.1f} GB"
+        lines.append(f"{i}. {name} {w}-{l} {gb}")
 
-    lines.append(f"{i}. {name} {wins}-{losses} {gb_text}")
+    lines.append("")
 
 rss = f"""<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0">

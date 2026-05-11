@@ -25,7 +25,8 @@ for record in data.get("records", []):
     teams = sorted(teams, key=lambda x: x.get("wins", 0), reverse=True)
 
     for i, t in enumerate(teams, 1):
-        name = t.get("team", {}).get("abbreviation") or "UNK"
+        name = (team.get("team", {}).get("abbreviation")
+    or team.get("team", {}).get("name") or "UNK")
         w = t.get("wins", 0)
         l = t.get("losses", 0)
 

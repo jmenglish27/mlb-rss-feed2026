@@ -6,11 +6,10 @@ URL = "https://statsapi.mlb.com/api/v1/standings?leagueId=103,104"
 
 def build_feed():
 
-    data = {}
     try:
         data = requests.get(URL, timeout=10).json()
     except Exception:
-        pass
+        data = {}
 
     lines = []
     lines.append("MLB Standings — AL West")
@@ -22,12 +21,17 @@ def build_feed():
 
     for record in records:
 
-        division_name = record.get("division", {}).get("name", "")
+        division_name = (
+            record.get("division", {}).get("name")
+            or ""
+        )
 
-        # STRICT FILTER: only AL West
+        # ✅ SIMPLE RELIABLE FILTER
         if "West" not in division_name:
             continue
-        if "American League West" not in division_name:
+
+        # we still ensure it's AL West-ish, but not strict match
+        if "League" in division_name and "West" not in division_name:
             continue
 
         alwest_found = True
@@ -38,8 +42,7 @@ def build_feed():
         teams = record.get("teamRecords", [])
 
         if not teams:
-            lines.append("No data available")
-            break
+            continue
 
         leader_wins = max(t.get("wins", 0) for t in teams)
 

@@ -11,24 +11,36 @@ def build_feed():
         data = {}
 
     lines = []
-    lines.append("MLB Standings — Live")
+    lines.append("MLB Standings — AL West")
     lines.append("")
 
     records = data.get("records", [])
 
+    # 🔥 ONLY AL WEST
     for record in records:
 
-        division = record.get("division", {}).get("name") or "Division"
-        lines.append(division)
+        division_name = (
+            record.get("division", {}).get("name")
+            or ""
+        )
+
+        if division_name != "American League West":
+            continue
+
+        # print division ONCE
+        lines.append("AL West")
+        lines.append("")
 
         teams = record.get("teamRecords", [])
 
         if not teams:
-            lines.append("")
-            continue
+            lines.append("No data available")
+            break
 
+        # leader for GB calculation
         leader_wins = max(t.get("wins", 0) for t in teams)
 
+        # sort standings
         teams = sorted(
             teams,
             key=lambda x: x.get("wins", 0),
@@ -47,15 +59,16 @@ def build_feed():
             lines.append(f"{i}. {name} {wins}-{losses} {gb_text}")
 
         lines.append("")
+        break  # 🔥 stop after AL West only
 
     rss = f"""<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0">
 <channel>
 <title>MLB Standings Feed</title>
-<description>Auto-updating MLB standings</description>
+<description>Auto-updating AL West standings</description>
 
 <item>
-<title>MLB Standings Update</title>
+<title>AL West Standings Update</title>
 <description><![CDATA[
 {chr(10).join(lines)}
 ]]></description>

@@ -22,10 +22,11 @@ for record in data.get("records", []):
 
     teams = record.get("teamRecords", [])
 
-# find top team wins (leader)
-leader_wins = max(t.get("wins", 0) for t in teams) if teams else 0
+if not teams:
+    continue
 
-# sort teams (best first)
+leader_wins = max(t.get("wins", 0) for t in teams)
+
 teams = sorted(teams, key=lambda x: x.get("wins", 0), reverse=True)
 
 for i, team in enumerate(teams, 1):
@@ -35,10 +36,7 @@ for i, team in enumerate(teams, 1):
 
     gb = (leader_wins - wins) / 2
 
-    if gb == 0:
-        gb_text = "—"
-    else:
-        gb_text = f"{gb:.1f} GB"
+    gb_text = "—" if gb == 0 else f"{gb:.1f} GB"
 
     lines.append(f"{i}. {name} {wins}-{losses} {gb_text}")
 

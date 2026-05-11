@@ -21,12 +21,11 @@ leader = max(t.get("wins", 0) for t in teams)
 teams = sorted(teams, key=lambda x: x.get("wins", 0), reverse=True)
 
 name = team.get("team", {}).get("name", "Unknown Team")
-
-    wins = team.get("wins", 0)
-    losses = team.get("losses", 0)
-    gb = (leader - wins) / 2
-    gb_text = "—" if gb == 0 else f"{gb:.1f} GB"
-    lines.append(f"{i}. {name} {wins}-{losses} {gb_text}")
+wins = team.get("wins", 0)
+losses = team.get("losses", 0)
+gb = (leader - wins) / 2
+gb_text = "—" if gb == 0 else f"{gb:.1f} GB"
+lines.append(f"{i}. {name} {wins}-{losses} {gb_text}")
 
 rss = f"""<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0">

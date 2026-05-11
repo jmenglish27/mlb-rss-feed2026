@@ -53,11 +53,9 @@ lines.append("")
 
 for record in data.get("records", []):
 
-    division = (
-        record.get("division", {}).get("name")
+    division = (record.get("division", {}).get("name")
         or record.get("division", {}).get("abbreviation")
-        or "Division"
-    )
+        or "Division")
 
     lines.append(division)   # ✅ ONLY ONCE PER DIVISION
 
@@ -74,12 +72,9 @@ for record in data.get("records", []):
         name = team.get("team", {}).get("name", "Unknown Team")
         wins = team.get("wins", 0)
         losses = team.get("losses", 0)
-
         gb = (leader - wins) / 2
         gb_text = "—" if gb == 0 else f"{gb:.1f} GB"
-
         lines.append(f"{i}. {name} {wins}-{losses} {gb_text}")
-
     lines.append("")  # blank line between divisions
 
 </item>

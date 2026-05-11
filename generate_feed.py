@@ -20,14 +20,27 @@ for record in data.get("records", []):
 
     lines.append(division)
 
-    for team in record.get("teamRecords", []):
-        name = team.get("team", {}).get("name", "Unknown")
-        wins = team.get("wins", "?")
-        losses = team.get("losses", "?")
+    teams = record.get("teamRecords", [])
 
-        lines.append(f"{name}: {wins}-{losses}")
+# find top team wins (leader)
+leader_wins = max(t.get("wins", 0) for t in teams) if teams else 0
 
-    lines.append("")
+# sort teams (best first)
+teams = sorted(teams, key=lambda x: x.get("wins", 0), reverse=True)
+
+for i, team in enumerate(teams, 1):
+    name = team.get("team", {}).get("abbreviation") or "UNK"
+    wins = team.get("wins", 0)
+    losses = team.get("losses", 0)
+
+    gb = (leader_wins - wins) / 2
+
+    if gb == 0:
+        gb_text = "—"
+    else:
+        gb_text = f"{gb:.1f} GB"
+
+    lines.append(f"{i}. {name} {wins}-{losses} {gb_text}")
 
 rss = f"""<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0">

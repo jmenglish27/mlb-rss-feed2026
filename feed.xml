@@ -2,18 +2,65 @@
 <rss version="2.0">
 <channel>
 <title>MLB Standings Feed</title>
-<description>Auto-updating AL West standings</description>
+<description>Auto-updating MLB standings (all divisions)</description>
 
 <item>
-<title>AL West Standings Update</title>
+<title>MLB Standings Update</title>
 <description><![CDATA[
-MLB Standings — AL West
+MLB Standings — All Divisions
 
-AL West data not found
+Division
+
+1. Rays 26-13 —
+2. Yankees 26-15 —
+3. Blue Jays 18-22 4.0 GB
+4. Orioles 18-23 4.0 GB
+5. Red Sox 17-23 4.5 GB
+
+Division
+
+1. Guardians 21-21 —
+2. White Sox 19-21 1.0 GB
+3. Tigers 19-22 1.0 GB
+4. Royals 19-22 1.0 GB
+5. Twins 18-23 1.5 GB
+
+Division
+
+1. Athletics 21-19 —
+2. Rangers 19-21 1.0 GB
+3. Mariners 19-22 1.0 GB
+4. Angels 16-25 2.5 GB
+5. Astros 16-25 2.5 GB
+
+Division
+
+1. Braves 28-13 —
+2. Phillies 19-22 4.5 GB
+3. Marlins 19-22 4.5 GB
+4. Nationals 19-22 4.5 GB
+5. Mets 15-25 6.5 GB
+
+Division
+
+1. Cubs 27-14 —
+2. Cardinals 23-17 2.0 GB
+3. Brewers 22-16 2.5 GB
+4. Pirates 22-19 2.5 GB
+5. Reds 22-19 2.5 GB
+
+Division
+
+1. Padres 24-16 —
+2. Dodgers 24-16 —
+3. D-backs 19-20 2.5 GB
+4. Giants 16-24 4.0 GB
+5. Rockies 16-25 4.0 GB
+
 ]]></description>
 
-<pubDate>Mon, 11 May 2026 16:31:54 -0000</pubDate>
-<guid>2026-05-11T16:31:54.213637</guid>
+<pubDate>Mon, 11 May 2026 16:35:01 -0000</pubDate>
+<guid>2026-05-11T16:35:01.601997</guid>
 </item>
 
 </channel>

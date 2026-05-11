@@ -9,8 +9,11 @@ data = requests.get(url).json()
 content = []
 
 for record in data["records"]:
-    division = record["division"]["name"]
-
+division = (
+    record.get("division", {}).get("name")
+    or record.get("division", {}).get("abbreviation")
+    or "Division"
+)
     content.append(f"{division}")
     content.append("")
 

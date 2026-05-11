@@ -2,53 +2,45 @@ import requests
 from datetime import datetime
 from email.utils import formatdate
 
-url = "https://statsapi.mlb.com/api/v1/standings?leagueId=103,104"
+URL = "https://statsapi.mlb.com/api/v1/standings?leagueId=103,104"
 
-data = requests.get(url).json()
+try:
+    data = requests.get(URL, timeout=10).json()
+except Exception:
+    data = {}
 
-content = []
+lines = []
 
-for record in data["records"]:
-division = (
-    record.get("division", {}).get("name")
-    or record.get("division", {}).get("abbreviation")
-    or "Division"
-)
-    content.append(f"{division}")
-    content.append("")
-
-    teams = sorted(
-        record["teamRecords"],
-        key=lambda x: int(x["divisionRank"])
+for record in data.get("records", []):
+    division = (
+        record.get("division", {}).get("name")
+        or record.get("division", {}).get("abbreviation")
+        or "Division"
     )
 
-    for team in teams:
-        name = team["team"]["name"]
-        wins = team["wins"]
-        losses = team["losses"]
+    lines.append(division)
 
-        content.append(f"{name}: {wins}-{losses}")
+    for team in record.get("teamRecords", []):
+        name = team.get("team", {}).get("name", "Unknown")
+        wins = team.get("wins", "?")
+        losses = team.get("losses", "?")
 
-    content.append("")
-    content.append("")
+        lines.append(f"{name}: {wins}-{losses}")
 
-standings_text = "\n".join(content)
+    lines.append("")
 
-rss = f'''<?xml version="1.0" encoding="UTF-8" ?>
+rss = f"""<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0">
 <channel>
 
 <title>MLB Standings Feed</title>
-<link>https://github.com</link>
 <description>Auto-updating MLB standings</description>
 
 <item>
 <title>MLB Standings Update</title>
 
 <description><![CDATA[
-<pre>
-{standings_text}
-</pre>
+{chr(10).join(lines)}
 ]]></description>
 
 <pubDate>{formatdate()}</pubDate>
@@ -58,9 +50,9 @@ rss = f'''<?xml version="1.0" encoding="UTF-8" ?>
 
 </channel>
 </rss>
-'''
+"""
 
 with open("feed.xml", "w", encoding="utf-8") as f:
     f.write(rss)
 
-print("feed.xml generated")
+print("feed.xml generated successfully")

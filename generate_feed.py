@@ -4,6 +4,8 @@ from email.utils import formatdate
 
 URL = "https://statsapi.mlb.com/api/v1/standings?leagueId=103,104"
 
+AL_WEST_TEAMS = {"HOU", "TEX", "SEA", "LAA", "OAK", "ATH"}
+
 def build_feed():
 
     try:
@@ -17,42 +19,35 @@ def build_feed():
 
     records = data.get("records", [])
 
-    alwest_found = False
+    team_rows = []
 
+    # 🔥 collect AL West teams from ALL divisions
     for record in records:
-
-        division_name = (
-            record.get("division", {}).get("name")
-            or ""
-        )
-
-        # ✅ SIMPLE RELIABLE FILTER
-        if "West" not in division_name:
-            continue
-
-        # we still ensure it's AL West-ish, but not strict match
-        if "League" in division_name and "West" not in division_name:
-            continue
-
-        alwest_found = True
-
-        lines.append("AL West")
-        lines.append("")
-
         teams = record.get("teamRecords", [])
 
-        if not teams:
-            continue
+        for t in teams:
+            team_info = t.get("team", {})
+            abbr = team_info.get("abbreviation")
 
-        leader_wins = max(t.get("wins", 0) for t in teams)
+            if abbr in AL_WEST_TEAMS:
+                team_rows.append(t)
 
-        teams = sorted(
-            teams,
+    if not team_rows:
+        lines.append("AL West data not found")
+    else:
+
+        leader_wins = max(t.get("wins", 0) for t in team_rows)
+
+        team_rows = sorted(
+            team_rows,
             key=lambda x: x.get("wins", 0),
             reverse=True
         )
 
-        for i, team in enumerate(teams, 1):
+        lines.append("AL West")
+        lines.append("")
+
+        for i, team in enumerate(team_rows, 1):
 
             name = team.get("team", {}).get("name", "Unknown Team")
             wins = team.get("wins", 0)
@@ -64,10 +59,6 @@ def build_feed():
             lines.append(f"{i}. {name} {wins}-{losses} {gb_text}")
 
         lines.append("")
-        break
-
-    if not alwest_found:
-        lines.append("AL West data not found")
 
     rss = f"""<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0">

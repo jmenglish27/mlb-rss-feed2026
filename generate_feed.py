@@ -12,7 +12,8 @@ except Exception:
 lines = []
 
 for record in data.get("records", []):
-    division_name = record.get("division", {}).get("name", "")
+   division = record.get("division", {}).get("name") or "Division"
+    lines.append(division)
     # ONLY keep AL West
     if division_name != "American League West":
         continue

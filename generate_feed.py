@@ -4,8 +4,6 @@ from email.utils import formatdate
 
 URL = "https://statsapi.mlb.com/api/v1/standings?leagueId=103,104"
 
-AL_WEST_TEAMS = {"HOU", "TEX", "SEA", "LAA", "OAK", "ATH"}
-
 def build_feed():
 
     try:
@@ -19,27 +17,30 @@ def build_feed():
 
     records = data.get("records", [])
 
-    team_rows = []
+    alwest_teams = []
 
-    # 🔥 collect AL West teams from ALL divisions
+    # 🔥 STEP 1: find AL West properly from API structure
     for record in records:
-        teams = record.get("teamRecords", [])
 
-        for t in teams:
-            team_info = t.get("team", {})
-            abbr = team_info.get("abbreviation")
+        division = record.get("division", {}).get("name", "")
 
-            if abbr in AL_WEST_TEAMS:
-                team_rows.append(t)
+        # flexible match (API naming varies)
+        if "West" in division and "American League" in division:
 
-    if not team_rows:
+            teams = record.get("teamRecords", [])
+
+            for t in teams:
+                alwest_teams.append(t)
+
+    # fallback safety
+    if not alwest_teams:
         lines.append("AL West data not found")
     else:
 
-        leader_wins = max(t.get("wins", 0) for t in team_rows)
+        leader_wins = max(t.get("wins", 0) for t in alwest_teams)
 
-        team_rows = sorted(
-            team_rows,
+        alwest_teams = sorted(
+            alwest_teams,
             key=lambda x: x.get("wins", 0),
             reverse=True
         )
@@ -47,7 +48,7 @@ def build_feed():
         lines.append("AL West")
         lines.append("")
 
-        for i, team in enumerate(team_rows, 1):
+        for i, team in enumerate(alwest_teams, 1):
 
             name = team.get("team", {}).get("name", "Unknown Team")
             wins = team.get("wins", 0)
